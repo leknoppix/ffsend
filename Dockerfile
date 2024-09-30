@@ -13,7 +13,12 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     git \
     curl \
+    && apt-get upgrade -y \
+    && apt-get clean \
+    && rm -rf /tmp/*
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get upgrade -y
 
 # Installer Rust en utilisant rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
@@ -36,9 +41,6 @@ WORKDIR /app/ffsend
 
 # Compiler et installer ffsend
 RUN cargo install --path .
-
-# Commande par défaut pour afficher l'aide de ffsend
-CMD ["ffsend", "--help"]
 
 # Commande par défaut pour afficher l'aide de ffsend
 CMD ["sh", "-c", "cp target/release/ffsend /output/ffsend && ffsend --help"]
