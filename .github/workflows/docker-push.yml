@@ -34,10 +34,23 @@ jobs:
           context: ./
           file: ./Dockerfile  # Spécifiez le chemin vers votre Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/riscv64, linux/s390x
           tags: ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Run Docker Container to Generate Output
+        run: |
+          mkdir -p output  # Créez le répertoire output s'il n'existe pas
+          for platform in linux/amd64 linux/arm64 linux/arm/v7 linux/ppc64le linux/riscv64 linux/s390x; do
+            docker run --rm -v $(pwd)/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest --platform $platform
+            mv output/ffsend output/ffsend-$platform
+          done
       - name: Verify
         run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: output/ffsend*  # Spécifiez le chemin vers le fichier à mettre en release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Utilisez le token GitHub pour créer une release

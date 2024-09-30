@@ -1,5 +1,5 @@
 # Utiliser une image de base Ubuntu
-FROM ubuntu:20.04
+FROM ubuntu:latest
 
 ENV TZ=Europe/Paris
 
