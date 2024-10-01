@@ -52,6 +52,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: output/ffsend*  # Spécifiez le chemin vers le fichier à mettre en release
-          tags: ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
+          tag_name: ffsend:latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Utilisez le token GitHub pour créer une release
