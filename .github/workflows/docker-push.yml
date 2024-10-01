@@ -34,7 +34,7 @@ jobs:
           context: ./
           file: ./Dockerfile  # Spécifiez le chemin vers votre Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/riscv64, linux/s390x
+          platforms: linux/amd64, linux/arm64
           tags: ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -42,7 +42,7 @@ jobs:
       - name: Run Docker Container to Generate Output
         run: |
           mkdir -p output  # Créez le répertoire output s'il n'existe pas
-          for platform in linux/amd64 linux/arm64 linux/arm/v7 linux/ppc64le linux/riscv64 linux/s390x; do
+          for platform in linux/amd64 linux/arm64; do
             docker run --rm -v $(pwd)/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest --platform $platform
             mv output/ffsend output/ffsend-$platform
           done
