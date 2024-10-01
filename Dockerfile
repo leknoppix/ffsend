@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && apt-get upgrade -y \
     && apt-get clean \
-    && rm -rf /tmp/*
+    && rm -rf /tmp/* \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get upgrade -y
