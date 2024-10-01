@@ -43,8 +43,8 @@ jobs:
         run: |
           mkdir -p output  # Créez le répertoire output s'il n'existe pas
           for platform in linux/amd64 linux/arm64; do
-             docker run --rm --platform $platform -v $(pwd)/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
-            mv output/ffsend output/ffsend-$platform
+            docker run --rm --platform $platform -v $(pwd)/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
+            mv output/ffsend output/ffsend-$(echo $platform | sed 's/\//-/g')
           done
       - name: Verify
         run: echo ${{ steps.docker_build.outputs.digest }}
