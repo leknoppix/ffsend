@@ -57,7 +57,8 @@ jobs:
       - name: Run Docker Container to Generate Output
         run: |
           mkdir -p output
-          for platform in linux/amd64 do
+          for platform in linux/amd64
+          do
             docker run --rm --platform $platform -v ${{ github.workspace }}/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
             mv output/ffsend output/ffsend-$(echo $platform | sed 's/\//-/g')
           done
