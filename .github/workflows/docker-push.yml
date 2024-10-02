@@ -34,7 +34,7 @@ jobs:
           context: ./
           file: ./Dockerfile  # Spécifiez le chemin vers votre Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64, linux/arm64, linux/aarch64, linux/riscv64
+          platforms: linux/amd64, linux/arm64, linux/aarch64
           tags: ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -57,10 +57,10 @@ jobs:
       - name: Run Docker Container to Generate Output
         run: |
           mkdir -p output
-          for platform in linux/amd64 linux/arm64 linux/aarch64 linux/riscv64
+          for platform in linux/amd64 linux/arm64 linux/aarch64
           do
             docker run --rm --platform $platform -v ${{ github.workspace }}/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
-            mv output/ffsend output/ffsend-$(echo $platform | sed 's/\//-/g')
+            mv output/ffsend output/ffsend-$(echo $platform | sed 's/\//-/g')-v${{ env.version }}
           done
       # Vérification de l’existence des fichiers générés
       - name: List Output Directory
