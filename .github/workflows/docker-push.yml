@@ -34,7 +34,7 @@ jobs:
           context: ./
           file: ./Dockerfile  # Spécifiez le chemin vers votre Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64, linux/arm64, linux/aarch64
+          platforms: linux/amd64, linux/arm64, linux/aarch64, linux/arm/v7
           tags: ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -47,17 +47,17 @@ jobs:
           echo "version=$version" >> $GITHUB_ENV
           echo "Extracted version: $version"
       # Création d'un tag basé sur la version extraite
-      - name: Create Tag from Version
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Action"
-          git tag v${{ env.version }}
-          git push origin v${{ env.version }}
+      #- name: Create Tag from Version
+      #  run: |
+      #    git config --global user.email "actions@github.com"
+      #    git config --global user.name "GitHub Action"
+      #    git tag v${{ env.version }}
+      #    git push origin v${{ env.version }}
       # Étape pour générer les fichiers de sortie à l’aide de Docker
       - name: Run Docker Container to Generate Output
         run: |
           mkdir -p output
-          for platform in linux/amd64 linux/arm64 linux/aarch64
+          for platform in linux/amd64 linux/arm64 linux/aarch64 linux/arm/v7
           do
             docker run --rm --platform $platform -v ${{ github.workspace }}/output:/output ${{ secrets.DOCKER_USERNAME }}/ffsend:latest
             mv output/ffsend output/ffsend-$(echo $platform | sed 's/\//-/g')-v${{ env.version }}
